@@ -1,0 +1,47 @@
+:coffeescript
+    $ ->
+
+
+#gesturepad
+    #gesture-square
+        #screen
+    %h2#orientation 
+    %h3#acceleration 
+
+    
+// IGNORE, BUT KEEP THIS LINE (Back button)   
+= render :partial => "application/back_to_root"
+    
+:scss
+    $gesturepad-bg: desaturate(green, 70%);
+    $gesture-square: lighten($gesturepad-bg, 70%);
+    html, body{ overflow: none;}
+    #gesturepad{
+        height: 100%;
+        width: 100%;
+        overflow: none;
+        color: white;
+        font-family: Avenir, sans-serif;
+        font-size: 4em;
+        text-align: center;
+            
+        background: $gesturepad-bg;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        #gesture-square{
+            width: 150px;
+            height: 200px;
+            background: $gesture-square;
+            transition: transform 2s;
+            #screen{
+                width: calc(100% - 20px);
+                height: calc(100% - 30px);
+                background: darken($gesture-square, 80%);
+                margin: 10px;
+                margin-bottom: 20px;
+            }
+        }
+    }
+    

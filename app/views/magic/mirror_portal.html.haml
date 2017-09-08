@@ -1,0 +1,83 @@
+:coffeescript
+    $ ->
+        console.log "WEBSOCKET TO MIRROR HERE"
+        console.log "WEBSOCKET HANDLER FROM MIRROR HERE"
+                
+        connection = new WebSocket('wss://p4-cs160-samy-jerry-jerrywu17.c9users.io:8081')
+        #connection = new WebSocket('wss://www.websocket.org/echo.html')
+
+        connection.onopen = ->
+            connection.send JSON.stringify {message: "Hello", identity: "mirror"}
+            console.log "this is being opened"
+        
+        $('#button').click (event) ->
+
+            #display the current click count inside the clicked div
+            connection.send(JSON.stringify({
+                   identity: "mirror",
+                   message: "Hello wand"
+               })
+            )
+        
+        
+        numTimes = ""
+
+        connection.onmessage = (event) ->
+            console.log("*******on message: MIRROR")
+            
+            if _.isString(event.data)
+                jsonObject = JSON.parse(event.data)
+                username = jsonObject.identity
+                message = jsonObject.message
+                
+                console.log("username: " + username)
+
+                if username == "wand"
+                    $("#message-mirror").html(message + numTimes)
+                    numTimes = numTimes + "!"
+
+                    console.log("Received data string from wand")
+
+        # let the receiver store the number of exclamation marks
+
+        
+
+#wand
+    %h1#message-mirror I am the mirror
+    #button
+        Press me!
+    
+// IGNORE, BUT KEEP THIS LINE (Back button)   
+= render :partial => "application/back_to_root"
+    
+:scss
+    $bg: desaturate(purple, 70%);
+    html, body{ overflow: none;}
+    #wand{
+        height: 100%;
+        width: 100%;
+        overflow: none;
+        color: white;
+        font-family: Avenir, sans-serif;
+        font-size: 4em;
+        text-align: center;
+            
+        background: $bg;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    #button{
+        background: white;
+        color: $bg;
+        width: 180px;
+        height: 40px;
+        font-size: 18pt;
+        text-align: center;
+        border-style: solid;
+        border-width: 3px;
+        border-color: green;
+        border-radius: 15px;
+    }
+    

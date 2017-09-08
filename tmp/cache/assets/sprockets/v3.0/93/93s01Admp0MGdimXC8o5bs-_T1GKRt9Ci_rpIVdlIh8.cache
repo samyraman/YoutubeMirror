@@ -1,0 +1,13 @@
+I"(function() {
+  var handleOrientation;
+
+  handleOrientation = function(event) {
+    this.absolute = event.absolute;
+    this.alpha = event.alpha;
+    this.beta = event.beta;
+    this.gamma = event.gamma;
+    console.log("absolute data: " + this.absolute);
+  };
+
+}).call(this);
+:ET

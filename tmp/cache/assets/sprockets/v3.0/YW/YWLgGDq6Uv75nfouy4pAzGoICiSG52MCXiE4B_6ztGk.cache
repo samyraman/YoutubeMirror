@@ -1,0 +1,77 @@
+I"k(function() {
+  var buffer_alpha, buffer_beta, buffer_gamma, buffer_x, buffer_y, buffer_z, last_n_averages, n;
+
+  last_n_averages = function(n, x, buffer) {
+    var average_x, i, sum_x;
+    i = void 0;
+    sum_x = void 0;
+    average_x = x;
+    buffer.push(x);
+    if (buffer.length > n) {
+      sum_x = 0;
+      i = 0;
+      while (i < buffer.length) {
+        sum_x += buffer[i];
+        i++;
+      }
+      average_x = sum_x / buffer.length;
+      buffer.shift();
+    }
+    return average_x;
+  };
+
+  buffer_alpha = [];
+
+  buffer_beta = [];
+
+  buffer_gamma = [];
+
+  buffer_x = [];
+
+  buffer_y = [];
+
+  buffer_z = [];
+
+  n = 20;
+
+  window.addEventListener('deviceorientation', function(event) {
+    var alpha, average_alpha, average_beta, average_gamma, beta, gamma;
+    alpha = event.alpha;
+    beta = event.beta;
+    gamma = event.gamma;
+    average_alpha = last_n_averages(n, alpha, buffer_alpha);
+    average_beta = last_n_averages(n, beta, buffer_beta);
+    average_gamma = last_n_averages(n, gamma, buffer_gamma);
+    return document.getElementById('orientation').innerHTML = average_alpha.toFixed() + "," + average_beta.toFixed() + "," + average_gamma.toFixed();
+  });
+
+  window.addEventListener('devicemotion', function(event) {
+    var average_x, average_y, average_z, i, sum_x_acc, sum_y_acc, sum_z_acc, x_acc, y_acc, z_acc;
+    x_acc = event.acceleration.x * 100;
+    y_acc = event.acceleration.y * 100;
+    z_acc = event.acceleration.z * 100;
+    average_x = x_acc;
+    average_y = y_acc;
+    average_z = z_acc;
+    buffer.push([x_acc, y_acc, z_acc]);
+    if (buffer.length > 20) {
+      sum_x_acc = 0;
+      sum_y_acc = 0;
+      sum_z_acc = 0;
+      i = 0;
+      while (i < buffer.length) {
+        sum_x_acc += buffer[i][0];
+        sum_y_acc += buffer[i][1];
+        sum_z_acc += buffer[i][2];
+        i++;
+      }
+      average_x = sum_x_acc / buffer.length;
+      average_y = sum_y_acc / buffer.length;
+      average_z = sum_z_acc / buffer.length;
+      buffer.shift();
+    }
+    return document.getElementById('acceleration').innerHTML = average_x.toFixed() + "," + average_y.toFixed() + "," + average_z.toFixed();
+  });
+
+}).call(this);
+:ET

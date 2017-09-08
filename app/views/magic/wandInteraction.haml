@@ -1,0 +1,93 @@
+:coffeescript
+    $ ->
+        console.log "WEBSOCKET TO MIRROR HERE"
+        console.log "WEBSOCKET HANDLER FROM MIRROR HERE"
+                
+        connection = new WebSocket('wss://p4-cs160-samy-jerry-jerrywu17.c9users.io:8081')
+        wait = (ms) ->
+            start = (new Date).getTime()
+            end = start
+            while end < start + ms
+                end = (new Date).getTime()
+            return
+        connection.onopen = ->
+            console.log "this is being opened"
+        lastClicked = ""    
+        console.log $('#event').html()
+        $('body').on 'DOMSubtreeModified', '#event', ->
+            console.log $('#event').html()
+            if $('#event').html() == "play"
+                lastClicked = "play"
+                $('#controlbutton').html('<img src=\'https://preview.c9users.io/jerrywu17/p4_cs160_samy_jerry/public/play.png\'>')
+                connection.send(JSON.stringify({
+                      identity: "wand",
+                      message: "play"
+                  })
+                )
+                wait(80)
+            if $('#event').html() == "pause"
+                lastClicked = "pause"
+                $('#controlbutton').html('<img src=\'https://preview.c9users.io/jerrywu17/p4_cs160_samy_jerry/public/pause.png\'>')
+                connection.send(JSON.stringify({
+                      identity: "wand",
+                      message: "pause"
+                  })
+                )
+                wait(80)
+            if $('#event').html() == "rewind"
+                lastClicked = "rewind"
+                $('#controlbutton').html('<img src=\'https://preview.c9users.io/jerrywu17/p4_cs160_samy_jerry/public/rewind.png\'>')
+                connection.send(JSON.stringify({
+                      identity: "wand",
+                      message: "rewind"
+                  })
+                )
+                wait(80)
+            if $('#event').html() == "forward"
+                lastClicked = "forward"
+                $('#controlbutton').html('<img src=\'https://preview.c9users.io/jerrywu17/p4_cs160_samy_jerry/public/forward.png\'>')
+                connection.send(JSON.stringify({
+                      identity: "wand",
+                      message: "forward"
+                    })
+                )
+                wait(80)
+                
+
+                        
+        
+#wand
+    #controlbutton
+        //=image_tag "https://preview.c9users.io/jerrywu17/p4_cs160_samy_jerry/public/play.png"
+    #event
+        play
+    // #pause.button Pause Video
+    // #rewind.button Rewind Video
+    // #forward.button Forward Video
+
+    
+
+    
+:scss
+    $bg: #f44277;
+    html, body{ overflow: none;}
+    #wand{
+        height: 100%;
+        width: 100%;
+        overflow: none;
+        color: white;
+        font-family: Avenir, sans-serif;
+        font-size: 4em;
+        text-align: center;
+            
+        background: $bg;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    #event{
+        opacity: 0;
+    }
+
+ 

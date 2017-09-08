@@ -1,0 +1,156 @@
+:coffeescript
+    $ ->
+        video = document.getElementById('video')
+        if navigator.mediaDevices and navigator.mediaDevices.getUserMedia
+            navigator.mediaDevices.getUserMedia(video: true).then (stream) ->
+                video.src = window.URL.createObjectURL(stream)
+                video.play()
+                return
+        $('#video').css
+            width: $(window).innerWidth() + 'px'
+            height: $(window).innerHeight() + 'px'
+        vid = document.getElementById('myVideo')
+                
+        connection = new WebSocket('wss://p4-cs160-samy-jerry-jerrywu17.c9users.io:8081')
+
+        connection.onopen = ->
+            console.log "this is being opened"
+            $("#status").html("&#9679 CONNECTED")
+            $('#status').removeClass('red').addClass 'green'
+        
+        connection.onclose = ->
+            console.log "this is being closed"
+            $("#status").html("&#9679 NOT CONNECTED")
+            $('#status').removeClass('green').addClass 'red'
+
+        
+        connection.onmessage = (event) ->
+            
+            if _.isString(event.data)
+                #create a JSON object
+                jsonObject = JSON.parse(event.data)
+                username = jsonObject.identity
+                message = jsonObject.message
+                
+                
+                if message == "play"
+                    console.log "receive play message"
+                    vid.play()
+                if message == "pause"
+                    console.log "receive pause message"
+                    vid.pause()
+                if message == "rewind"
+                    console.log "receive rewind message"
+                    if vid.currentTime <= 15
+                        vid.currentTime = 0
+                    else
+                        vid.currentTime -= 15;
+                if message == "forward"
+                    console.log "receive forward message"
+                    if vid.currentTime >= vid.duration - 15
+                        vid.currentTime = vid.duration
+                    else
+                        vid.currentTime += 15;
+    $ ->
+        div = $('#help')
+        div.animate {
+            right: '+=217'
+            opacity: '0.6'
+        }, 2000, ->
+        div.animate { opacity: '0.8' }, 5000, ->
+        div.animate {
+            right: '-=230'
+            opacity: '0.6'
+        }, 2000, ->
+        return
+
+#webcam
+    %span
+        %video#video{:autoplay => ""}
+        %video#myVideo{ :height => "176", :width => "320"}
+            %source{:src => "https://preview.c9users.io/jerrywu17/p4_cs160_samy_jerry/public/makeup.mp4", :type => "video/mp4"}
+        #status.red
+            &#9679 NOT CONNECTED
+        #help
+            =image_tag "https://preview.c9users.io/jerrywu17/p4_cs160_samy_jerry/public/help.png", :class => "image"
+            .text
+                %br
+                To 
+                play video, 
+                %b lean forward.
+                %br
+                To 
+                pause,
+                %b lean back.
+                %br
+                To 
+                rewind,
+                %b roll wand left.
+                %br
+                To 
+                forward,
+                %b roll wand right.
+                
+        
+
+
+    
+    
+:scss
+    html, body{ overflow: none;}
+    #webcam{
+        height: 100%;
+        width: 100%;
+    }
+    #myVideo{
+        position: absolute;
+        top: 0px;
+        right: 0px;
+    }
+    #video {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+     }
+    #button{
+        background: white;
+        width: 180px;
+        height: 40px;
+        font-size: 18pt;
+        text-align: center;
+        border-style: solid;
+        border-width: 3px;
+        border-color: green;
+        border-radius: 15px;
+    }
+    #status{
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        font-size: 10pt;
+        font-weight: bold;
+    }
+    .red{
+        color: red;
+    }
+    .green{
+        color: #39e550;
+    }
+    #help{
+        position: absolute;
+        height: 200px;
+        bottom: 50px;
+        right: -217px;
+        border-radius: 30px 0px 0px 30px;
+        background-color: white;
+        padding: 20px;
+        .text{
+            line-height: 1.5;
+        }
+        .image{
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+    

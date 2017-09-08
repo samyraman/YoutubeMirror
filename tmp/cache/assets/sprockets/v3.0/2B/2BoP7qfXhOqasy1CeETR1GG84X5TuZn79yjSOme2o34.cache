@@ -1,0 +1,68 @@
+I"(function() {
+  var buffer_alpha, buffer_beta, buffer_gamma, buffer_x, buffer_y, buffer_z, last_n_averages, n;
+
+  last_n_averages = function(n, x, buffer) {
+    var average_x, i, sum_x;
+    i = void 0;
+    sum_x = void 0;
+    average_x = x;
+    buffer.push(x);
+    if (buffer.length > n) {
+      sum_x = 0;
+      i = 0;
+      while (i < buffer.length) {
+        sum_x += buffer[i];
+        i++;
+      }
+      average_x = sum_x / buffer.length;
+      buffer.shift();
+    }
+    return average_x;
+  };
+
+  buffer_alpha = [];
+
+  buffer_beta = [];
+
+  buffer_gamma = [];
+
+  buffer_x = [];
+
+  buffer_y = [];
+
+  buffer_z = [];
+
+  n = 20;
+
+  average_alpha;
+
+  average_beta;
+
+  average_gamma;
+
+  average_gamma;
+
+  window.addEventListener('deviceorientation', function(event) {
+    var alpha, average_alpha, average_beta, average_gamma, beta, gamma;
+    alpha = event.alpha;
+    beta = event.beta;
+    gamma = event.gamma;
+    average_alpha = last_n_averages(n, alpha, buffer_alpha);
+    average_beta = last_n_averages(n, beta, buffer_beta);
+    average_gamma = last_n_averages(n, gamma, buffer_gamma);
+    return document.getElementById('orientation').innerHTML = average_alpha.toFixed() + "," + average_beta.toFixed() + "," + average_gamma.toFixed();
+  });
+
+  window.addEventListener('devicemotion', function(event) {
+    var average_x, average_y, average_z, x_acc, y_acc, z_acc;
+    x_acc = event.acceleration.x * 100;
+    y_acc = event.acceleration.y * 100;
+    z_acc = event.acceleration.z * 100;
+    average_x = last_n_averages(n, x_acc, buffer_x);
+    average_y = last_n_averages(n, y_acc, buffer_y);
+    average_z = last_n_averages(n, z_acc, buffer_z);
+    return document.getElementById('acceleration').innerHTML = average_x.toFixed() + "," + average_y.toFixed() + "," + average_z.toFixed();
+  });
+
+}).call(this);
+:ET

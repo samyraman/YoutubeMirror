@@ -1,0 +1,103 @@
+:coffeescript
+    $ ->
+        video = document.getElementById('video')
+        if navigator.mediaDevices and navigator.mediaDevices.getUserMedia
+            navigator.mediaDevices.getUserMedia(video: true).then (stream) ->
+                video.src = window.URL.createObjectURL(stream)
+                video.play()
+                return
+            
+        canvas = document.getElementById('canvas')
+        context = canvas.getContext('2d')
+        video = document.getElementById('video')
+        #document.getElementById('snap').addEventListener 'click', ->
+        poll = ->
+            nIntervId = setInterval(getData, 500)
+            return
+        lightArray = []
+        getData = ->
+            context.drawImage video, 0, 0, 320, 240
+            pixel = context.getImageData(0, 0, 320, 240)
+            imgData = pixel.data
+            i = 0
+            count = 0
+            BRIGHTNESS = 0
+            while i < imgData.length - 4
+                R = imgData[i]
+                G = imgData[i+1]
+                B = imgData[i+2]
+                A = imgData[i+3]
+                BRIGHTNESS += (0.2126 * R + 0.7152 * G + 0.0722 * B)
+                i += 4
+                count++
+            light = BRIGHTNESS/count
+            document.getElementById('avg').innerHTML = light
+            lightArray.push light
+            if lightArray.length > 3
+                lightArray.shift()
+            if lightArray[2] - lightArray[0] > 25
+                document.getElementById('lights').innerHTML = "EVENT: LIGHTS TURNED ON"
+            else if lightArray[0] - lightArray[2] > 25
+                document.getElementById('lights').innerHTML = "EVENT: LIGHTS TURNED OFF"
+            else if light > 40
+                document.getElementById('lights').innerHTML = "EVENT: LIGHTS ON"
+            else
+                document.getElementById('lights').innerHTML = "EVENT: LIGHTS OFF"
+            return
+        poll()
+
+#instadesktop
+    #webcam-feed.col-xs-12.col-sm-6
+        %span
+            %video#video{:autoplay => "", :height => "360", :width => "480"}
+        %canvas#canvas{:height => "240", :width => "320"}
+
+    #snapshot.col-xs-12.col-sm-6
+        %h1#lights 
+        %h2#avg
+
+// IGNORE, BUT KEEP THIS LINE (Back button)   
+= render :partial => "application/back_to_root"
+:scss
+    #instadesktop{
+        height: 100%;
+        width: 100%;
+        color: white;
+        font-family: Avenir, sans-serif;
+        font-size: 4em;
+        text-align: center;
+            
+        #canvas {
+            opacity: 0;
+            height: 35px;
+            width: 35px;
+        }
+        
+        #webcam-feed{
+            height: 100%;
+            background: desaturate(blue, 80%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            button{
+                position: absolute;
+                bottom: 0;
+            }
+        }
+        #snapshot{
+            height: 100%;
+            background: desaturate(red, 80%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            position: relative;
+        }
+    }
+    #back-button{
+        position: absolute;
+        z-index: 100;
+        top: 15px;
+        left: 15px;
+    }

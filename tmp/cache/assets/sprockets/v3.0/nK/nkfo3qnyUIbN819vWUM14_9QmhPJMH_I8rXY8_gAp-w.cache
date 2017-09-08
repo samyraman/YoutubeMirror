@@ -1,0 +1,91 @@
+I"æ	(function() {
+  var average_alpha, average_beta, average_gamma, buffer_alpha, buffer_beta, buffer_gamma, buffer_x, buffer_y, buffer_z, changing_lots, last_n_averages, motionStill, n, orientationStill;
+
+  last_n_averages = function(n, x, buffer) {
+    var average_x, i, sum_x;
+    i = void 0;
+    sum_x = void 0;
+    average_x = x;
+    buffer.push(x);
+    if (buffer.length > n) {
+      sum_x = 0;
+      i = 0;
+      while (i < buffer.length) {
+        sum_x += buffer[i];
+        i++;
+      }
+      average_x = sum_x / buffer.length;
+      buffer.shift();
+    }
+    return average_x;
+  };
+
+  changing_lots = function(x, buffer_num) {
+    if (buffer_num == null) {
+      buffer_num = 10;
+    }
+    return x > buffer_num;
+  };
+
+  buffer_alpha = [];
+
+  buffer_beta = [];
+
+  buffer_gamma = [];
+
+  buffer_x = [];
+
+  buffer_y = [];
+
+  buffer_z = [];
+
+  n = 100;
+
+  orientationStill = false;
+
+  motionStill = false;
+
+  average_alpha = [];
+
+  average_beta = [];
+
+  average_gamma = [];
+
+  window.addEventListener('deviceorientation', function(event) {
+    var a, alpha, b, beta, g, gamma;
+    alpha = event.alpha;
+    beta = event.beta;
+    gamma = event.gamma;
+    a = last_n_averages(n, alpha, buffer_alpha).toFixed();
+    b = last_n_averages(n, beta, buffer_beta).toFixed();
+    g = last_n_averages(n, gamma, buffer_gamma).toFixed();
+    document.getElementById('orientation').innerHTML = a + "," + b + "," + g;
+    average_alpha.push(last_n_averages(n, alpha, buffer_alpha).toFixed(1));
+    average_beta.push(last_n_averages(n, beta, buffer_beta));
+    average_gamma.push(last_n_averages(n, gamma, buffer_gamma));
+    if (average_alpha.length > 3) {
+      average_alpha.shift();
+    }
+    if (average_beta.length > 3) {
+      average_beta.shift();
+    }
+    if (average_gamma.length > 3) {
+      average_gamma.shift();
+    }
+    return document.getElementById('gesture').innerHTML = "average_alpha: " + (average_alpha[1] - average_alpha[0]);
+  });
+
+  window.addEventListener('devicemotion', function(event) {
+    var action, average_x, average_y, average_z, x_acc, y_acc, z_acc;
+    x_acc = event.acceleration.x * 100;
+    y_acc = event.acceleration.y * 100;
+    z_acc = event.acceleration.z * 100;
+    average_x = last_n_averages(n, x_acc, buffer_x);
+    average_y = last_n_averages(n, y_acc, buffer_y);
+    average_z = last_n_averages(n, z_acc, buffer_z);
+    document.getElementById('acceleration').innerHTML = average_x.toFixed() + "," + average_y.toFixed() + "," + average_z.toFixed();
+    return action = null;
+  });
+
+}).call(this);
+:ET

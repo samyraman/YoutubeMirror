@@ -1,0 +1,24 @@
+
+#wand.col-xs-12
+    %span MAGIC WAND
+      
+// IGNORE, BUT KEEP THIS LINE (Back button)   
+= render :partial => "application/back_to_root"
+
+:scss
+    #wand{
+        height: 100%;
+        width: 100%;
+        color: white;
+        font-family: Avenir, sans-serif;
+        font-size: 4em;
+        text-align: center;
+        
+        background: desaturate(orange, 80%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+       
+    }
+   
